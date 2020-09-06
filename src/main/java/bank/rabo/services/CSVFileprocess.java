@@ -26,25 +26,30 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class CSVFileprocess implements Fileprocessor{
 	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CSVFileprocess.class);
+	
 	@Override
 	public void processFile(List<String> inputPath, String destinationPath) {
 		log.info("method processFile entering ");
-		String reportName = "\\duplicateRecordsinCSV.txt";
-	    List<Record> records = new ArrayList<Record>();
+		int reportNo = 1;
+		String reportName = null;
+	    List<Record> records = null;
 	    for(String filePath : inputPath) {
+	    	records = new ArrayList<Record>();
 	    try{
 	      File inputF = new File(filePath);
 	      InputStream inputFS = new FileInputStream(inputF);
 	      BufferedReader br = new BufferedReader(new InputStreamReader(inputFS));
 	      // skip the header of the csv
 	      records = br.lines().skip(1).map(mapToItem).collect(Collectors.toList());
+	      reportName = "\\duplicateRecordsinCSV"+reportNo+".txt";
+	      FileprocessorUtil.generateReport(destinationPath, records, reportName, FileextensionConstant.CSV_EXTN);
 	      br.close();
+	      reportNo++;
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
 	  }
 	    
-	    FileprocessorUtil.generateReport(destinationPath, records, reportName, FileextensionConstant.CSV_EXTN);
 	    log.info("method processFile entering ");
 	    
 	}

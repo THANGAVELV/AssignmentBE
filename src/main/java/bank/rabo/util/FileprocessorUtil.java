@@ -85,16 +85,7 @@ public class FileprocessorUtil {
 		 */
 	    //duplicates.forEach(System.out::println);
 		log.info("method generateReport entering ");
-		Set<BigInteger> items = new HashSet<>();
-		List<Record> findDuplicateRecord = new ArrayList<>();
-		for(Record records1 : records) {
-			if(!items.add(records1.getReference_No())) {
-				records1.setDuplicate("Yes");
-				findDuplicateRecord.add(records1);
-			}
-		}
-		
-		
+		List<Record> findDuplicateRecord = findDuplicareRefno(records);
 		List<Record> validatedEndBalRecords = validateEndBalance(records);
 	    
 	    StringBuilder sb = new StringBuilder("Reference  Description\r\n");
@@ -106,12 +97,25 @@ public class FileprocessorUtil {
 	    	sb.append("No duplicate in transaction reference");
 	    }
 	    try {
+	    	log.error("REPORT NAME : " + reportName);
 			Files.write(Paths.get(destinationPath+reportName), sb.toString().getBytes());
 			log.info("Duplicate records in "+fileType+" Files generated");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	    log.info("method generateReport existing ");
+	}
+
+	public static List<Record> findDuplicareRefno(final List<Record> records) {
+		Set<BigInteger> items = new HashSet<>();
+		List<Record> findDuplicateRecord = new ArrayList<>();
+		for(Record records1 : records) {
+			if(!items.add(records1.getReference_No())) {
+				records1.setDuplicate("Yes");
+				findDuplicateRecord.add(records1);
+			}
+		}
+		return findDuplicateRecord;
 	}
 
 	private static void reportContentBuilder(List<Record> duplicates, StringBuilder sb) {

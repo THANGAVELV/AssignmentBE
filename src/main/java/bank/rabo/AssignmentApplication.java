@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -43,7 +41,7 @@ public class AssignmentApplication implements CommandLineRunner {
 			destDirectory = new File(args[1]);
 			destinationPath = args[1];
 
-			if (!destDirectory.isDirectory()) {
+			if (!destDirectory.isDirectory()) {	
 				destDirectory.mkdir();
 				log.info("Destination Directory not available, now creted");
 			}
@@ -59,6 +57,8 @@ public class AssignmentApplication implements CommandLineRunner {
 			FileprocessorUtil.processFiles(map);
 			log.info("Main run method ending");
 
+		}else {
+            log.error("Need argument 1 as input full file path and argument 2 output full folder path");
 		}
 
 	}

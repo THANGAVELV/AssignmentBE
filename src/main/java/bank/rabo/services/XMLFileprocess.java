@@ -33,9 +33,12 @@ public class XMLFileprocess implements Fileprocessor {
 	public void processFile(List<String> inputPath, String destinationPath) {
 		log.info("method processFile entering ");
 		Record record = null;
-		List<Record> listOfRecords = new ArrayList<>();
-		String reportName = "\\duplicateRecordsinXML.txt";
+		int reportNo = 1;
+		List<Record> listOfRecords = null;
+		String reportName = null;
+		
 		for (String path : inputPath) {
+			listOfRecords = new ArrayList<>();
 			try {
 
 				File fXmlFile = new File(path);
@@ -70,9 +73,13 @@ public class XMLFileprocess implements Fileprocessor {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			reportName = "\\duplicateRecordsinXML"+reportNo+".txt";
+			
+			FileprocessorUtil.generateReport(destinationPath, listOfRecords, reportName, FileextensionConstant.XML_EXTN);
+			reportNo++;
 		}
 
-		FileprocessorUtil.generateReport(destinationPath, listOfRecords, reportName, FileextensionConstant.XML_EXTN);
+		
 		log.info("method processFile existing ");
 
 	}
