@@ -17,21 +17,22 @@ import bank.rabo.constant.FileextensionConstant;
 import bank.rabo.util.FileprocessorUtil;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 @SpringBootApplication(scanBasePackages = "bank.rabo")
-public class AssignmentApplication implements CommandLineRunner{
+public class AssignmentApplication implements CommandLineRunner {
 	public static String destinationPath = null;
+
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AssignmentApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication springApp = new SpringApplication(AssignmentApplication.class);
 		springApp.setBannerMode(Banner.Mode.OFF);
-		System.out.println("Hello World");
 		springApp.run(args);
 	}
-	
+
 	@Override
 	public void run(String... args) throws Exception {
+		log.info("Main run method entering");
 		File srcDirectory = null;
 		File destDirectory = null;
 		List<String> listofCSVFiles = new ArrayList<>();
@@ -41,28 +42,25 @@ public class AssignmentApplication implements CommandLineRunner{
 			srcDirectory = new File(args[0]);
 			destDirectory = new File(args[1]);
 			destinationPath = args[1];
-			
-			if(!destDirectory.isDirectory()) {
+
+			if (!destDirectory.isDirectory()) {
 				destDirectory.mkdir();
-				System.out.println("Destination Directory not available, now creted");
+				log.info("Destination Directory not available, now creted");
 			}
-			
+
 			if (srcDirectory.isDirectory() && srcDirectory.length() > 0) {
-				map = FileprocessorUtil.groupingFiles(srcDirectory, listofCSVFiles, listofXMLFiles, map, args);
-				if(map != null && map.size() > 0) {
+				map = FileprocessorUtil.groupingFiles(srcDirectory, listofCSVFiles, listofXMLFiles, map);
+				if (map != null && map.size() > 0) {
 					listofCSVFiles = map.get(FileextensionConstant.CSV_EXTN);
 					listofXMLFiles = map.get(FileextensionConstant.XML_EXTN);
 				}
 			}
-			
-			System.out.println("listofXMLFiles " +map);
+
 			FileprocessorUtil.processFiles(map);
-			
-			
+			log.info("Main run method ending");
 
 		}
 
 	}
-
 
 }

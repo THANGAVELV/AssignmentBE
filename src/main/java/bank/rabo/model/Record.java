@@ -1,23 +1,44 @@
 package bank.rabo.model;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import lombok.Data;
 
-@Data
 public class Record {
-	private Integer reference_No;
+	private BigInteger reference_No;
 	private String acc_No;
 	private String description;
 	private BigDecimal start_Bal;
 	private BigDecimal mutation;
 	private BigDecimal end_Bal;
+	private String duplicate;
+	private String endBalInvalid;
+	
 
-	public Integer getReference_No() {
+	public Record() {
+	}
+	
+	
+
+	public Record(BigInteger reference_No, String acc_No, String description, BigDecimal start_Bal, BigDecimal mutation,
+			BigDecimal end_Bal) {
+		super();
+		this.reference_No = reference_No;
+		this.acc_No = acc_No;
+		this.description = description;
+		this.start_Bal = start_Bal;
+		this.mutation = mutation;
+		this.end_Bal = end_Bal;
+	}
+
+
+
+	public BigInteger getReference_No() {
 		return reference_No;
 	}
 
-	public void setReference_No(Integer reference_No) {
+	public void setReference_No(BigInteger reference_No) {
 		this.reference_No = reference_No;
 	}
 
@@ -61,12 +82,26 @@ public class Record {
 		this.end_Bal = end_Bal;
 	}
 
+	public String getDuplicate() {
+		return duplicate;
+	}
+
+	public void setDuplicate(String duplicate) {
+		this.duplicate = duplicate;
+	}
+
+	public String getEndBalInvalid() {
+		return endBalInvalid;
+	}
+
+	public void setEndBalInvalid(String endBalInvalid) {
+		this.endBalInvalid = endBalInvalid;
+	}
 
 	@Override
 	public String toString() {
 		return "Record [reference_No=" + reference_No + ", acc_No=" + acc_No + ", description=" + description
-				+ ", start_Bal=" + start_Bal + ", mutation=" + mutation + ", end_Bal=" + end_Bal  + "]";
+				+ ", start_Bal=" + start_Bal + ", mutation=" + mutation + ", end_Bal=" + end_Bal + "]";
 	}
-	
-	
+
 }

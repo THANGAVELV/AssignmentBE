@@ -3,6 +3,7 @@ package bank.rabo.services;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,12 +22,16 @@ import org.w3c.dom.NodeList;
 import bank.rabo.constant.FileextensionConstant;
 import bank.rabo.model.Record;
 import bank.rabo.util.FileprocessorUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class XMLFileprocess implements Fileprocessor {
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CSVFileprocess.class);
 
 	@Override
 	public void processFile(List<String> inputPath, String destinationPath) {
+		log.info("method processFile entering ");
 		Record record = null;
 		List<Record> listOfRecords = new ArrayList<>();
 		String reportName = "\\duplicateRecordsinXML.txt";
@@ -39,24 +44,17 @@ public class XMLFileprocess implements Fileprocessor {
 				Document doc = dBuilder.parse(fXmlFile);
 
 				doc.getDocumentElement().normalize();
-
 				NodeList nList = doc.getElementsByTagName("record");
-
-				// System.out.println("----------------------------");
-
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 
 					Node nNode = nList.item(temp);
-
-					// System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 						Element eElement = (Element) nNode;
 
 						record = new Record();
 
-						record.setReference_No(Integer.valueOf(eElement.getAttribute("reference")));
+						record.setReference_No(new BigInteger(eElement.getAttribute("reference")));
 						record.setAcc_No(eElement.getElementsByTagName("accountNumber").item(0).getTextContent());
 						record.setDescription(eElement.getElementsByTagName("description").item(0).getTextContent());
 						record.setStart_Bal(
@@ -65,20 +63,6 @@ public class XMLFileprocess implements Fileprocessor {
 								new BigDecimal(eElement.getElementsByTagName("mutation").item(0).getTextContent()));
 						record.setEnd_Bal(
 								new BigDecimal(eElement.getElementsByTagName("endBalance").item(0).getTextContent()));
-
-						/*
-						 * System.out.println("Reference : " + eElement.getAttribute("reference"));
-						 * System.out.println( "Account No : " +
-						 * eElement.getElementsByTagName("accountNumber").item(0).getTextContent());
-						 * System.out.println( "Description : " +
-						 * eElement.getElementsByTagName("description").item(0).getTextContent());
-						 * System.out.println("Start Balance : " +
-						 * eElement.getElementsByTagName("startBalance").item(0).getTextContent());
-						 * System.out.println( "Mutation : " +
-						 * eElement.getElementsByTagName("mutation").item(0).getTextContent());
-						 * System.out.println( "End Balance : " +
-						 * eElement.getElementsByTagName("endBalance").item(0).getTextContent());
-						 */
 
 					}
 					listOfRecords.add(record);
@@ -89,6 +73,7 @@ public class XMLFileprocess implements Fileprocessor {
 		}
 
 		FileprocessorUtil.generateReport(destinationPath, listOfRecords, reportName, FileextensionConstant.XML_EXTN);
+		log.info("method processFile existing ");
 
 	}
 }
