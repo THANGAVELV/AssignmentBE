@@ -37,7 +37,6 @@ public class AssignmentApplication implements CommandLineRunner{
 		List<String> listofCSVFiles = new ArrayList<>();
 		List<String> listofXMLFiles = new ArrayList<>();
 		Map<String, List<String>> map = new HashMap<>();
-		StringBuilder sb = null;
 		if (args.length > 0) {
 			srcDirectory = new File(args[0]);
 			destDirectory = new File(args[1]);
@@ -49,23 +48,10 @@ public class AssignmentApplication implements CommandLineRunner{
 			}
 			
 			if (srcDirectory.isDirectory() && srcDirectory.length() > 0) {
-				String[] listOffiles = srcDirectory.list();
-				for (String fileName : listOffiles) {
-					Optional<String> fileExtn = FileprocessorUtil.getExtensionByStringHandling(fileName);
-					if(fileExtn.isPresent()) {
-						if(fileExtn.get().equalsIgnoreCase(FileextensionConstant.CSV_EXTN)) {
-							sb = new StringBuilder();
-							sb.append(args[0]).append("\\"+fileName);
-							listofCSVFiles.add(sb.toString());
-							map.put(FileextensionConstant.CSV_EXTN, listofCSVFiles);
-						}else if(fileExtn.get().equalsIgnoreCase(FileextensionConstant.XML_EXTN)) {
-							sb = new StringBuilder();
-							sb.append(args[0]).append("\\"+fileName);
-							listofXMLFiles.add(sb.toString());
-							map.put(FileextensionConstant.XML_EXTN, listofXMLFiles);
-						}
-					}
-					
+				map = FileprocessorUtil.groupingFiles(srcDirectory, listofCSVFiles, listofXMLFiles, map, args);
+				if(map != null && map.size() > 0) {
+					listofCSVFiles = map.get(FileextensionConstant.CSV_EXTN);
+					listofXMLFiles = map.get(FileextensionConstant.XML_EXTN);
 				}
 			}
 			
@@ -77,6 +63,6 @@ public class AssignmentApplication implements CommandLineRunner{
 		}
 
 	}
-	
+
 
 }
